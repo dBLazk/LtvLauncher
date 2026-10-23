@@ -61,6 +61,7 @@ const String _appLanguageKey = "app_language";
 const String _showWeatherInStatusBarKey = "show_weather_in_status_bar";
 const String _showWeatherWarningsKey = "show_weather_warnings";
 const String _temperatureUnitKey = "temperature_unit";
+const String _quietHomeEnabledKey = "quiet_home_enabled";
 
 const String TEMPERATURE_UNIT_CELSIUS = "celsius";
 const String TEMPERATURE_UNIT_FAHRENHEIT = "fahrenheit";
@@ -95,6 +96,7 @@ class SettingsService extends ChangeNotifier {
   late bool _appHighlightAnimationEnabled;
   late bool _appKeyClickEnabled;
   late bool _autoHideAppBarEnabled;
+  late bool _quietHomeEnabled;
   late bool _showCategoryTitles;
   late bool _showCategoryAppCount;
   late bool _showAppNamesBelowIcons;
@@ -136,6 +138,8 @@ class SettingsService extends ChangeNotifier {
   bool get appKeyClickEnabled => _appKeyClickEnabled;
 
   bool get autoHideAppBarEnabled => _autoHideAppBarEnabled;
+
+  bool get quietHomeEnabled => _quietHomeEnabled;
 
   bool get showCategoryTitles => _showCategoryTitles;
 
@@ -212,6 +216,7 @@ class SettingsService extends ChangeNotifier {
     _appHighlightAnimationEnabled = _sharedPreferences.getBool(_appHighlightAnimationEnabledKey) ?? true;
     _appKeyClickEnabled = _sharedPreferences.getBool(_appKeyClickEnabledKey) ?? true;
     _autoHideAppBarEnabled = _sharedPreferences.getBool(_autoHideAppBarKey) ?? false;
+    _quietHomeEnabled = _sharedPreferences.getBool(_quietHomeEnabledKey) ?? true;
     _showCategoryTitles = _sharedPreferences.getBool(_showCategoryTitlesKey) ?? true;
     _showCategoryAppCount = _sharedPreferences.getBool(_showCategoryAppCountKey) ?? false;
     _showAppNamesBelowIcons = _sharedPreferences.getBool(_showAppNamesBelowIconsKey) ?? false;
@@ -255,6 +260,7 @@ class SettingsService extends ChangeNotifier {
       _appHighlightAnimationEnabledKey: _appHighlightAnimationEnabled,
       _appKeyClickEnabledKey: _appKeyClickEnabled,
       _autoHideAppBarKey: _autoHideAppBarEnabled,
+      _quietHomeEnabledKey: _quietHomeEnabled,
       _showCategoryTitlesKey: _showCategoryTitles,
       _showCategoryAppCountKey: _showCategoryAppCount,
       _showAppNamesBelowIconsKey: _showAppNamesBelowIcons,
@@ -327,6 +333,12 @@ class SettingsService extends ChangeNotifier {
   Future<void> setAppKeyClickEnabled(bool value) async {
     await _sharedPreferences.setBool(_appKeyClickEnabledKey, value);
     _appKeyClickEnabled = value;
+    notifyListeners();
+  }
+
+  Future<void> setQuietHomeEnabled(bool value) async {
+    await _sharedPreferences.setBool(_quietHomeEnabledKey, value);
+    _quietHomeEnabled = value;
     notifyListeners();
   }
 

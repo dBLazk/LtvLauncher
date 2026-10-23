@@ -29,13 +29,22 @@ class LauncherState extends ChangeNotifier
 {
   bool _isDefaultLauncher;
   bool _launcherVisible;
+  bool _allAppsOpen = false;
 
   DateTime? _suppressBackUntil;
 
   bool  get isDefaultLauncher => _isDefaultLauncher;
   bool  get launcherVisible => _launcherVisible;
+  bool  get allAppsOpen => _allAppsOpen;
 
   LauncherState() : _isDefaultLauncher = false, _launcherVisible = true;
+
+  /// Quiet home: true while the classic "All apps" view is shown instead.
+  void setAllAppsOpen(bool value) {
+    if (_allAppsOpen == value) return;
+    _allAppsOpen = value;
+    notifyListeners();
+  }
 
   void toggleLauncherVisibility() {
     _launcherVisible = !_launcherVisible;
@@ -59,6 +68,12 @@ class LauncherState extends ChangeNotifier
     AppsService appsService = context.read<AppsService>();
     LauncherState launcherState = context.read<LauncherState>();
     SettingsService settingsService = context.read<SettingsService>();
+
+    // Quiet home: Back from "All apps" returns to the quiet screen first.
+    if (settingsService.quietHomeEnabled && launcherState.allAppsOpen) {
+      launcherState.setAllAppsOpen(false);
+      return;
+    }
 
     if (kDebugMode || launcherState.isDefaultLauncher) {
       launcherState.refresh(appsService);

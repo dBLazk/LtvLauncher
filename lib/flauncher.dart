@@ -25,6 +25,7 @@ import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
 import 'package:flauncher/widgets/launcher_alternative_view.dart';
+import 'package:flauncher/widgets/quiet_home.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -61,14 +62,19 @@ class _FLauncherState extends State<FLauncher> {
               builder: (_, wallpaperService, __) => _wallpaper(context, wallpaperService)
             ),
           ),
-          Consumer<LauncherState>(
-            builder: (_, state, child) => Visibility(
-              child: child!,
-              replacement: const Center(
-                child: AlternativeLauncherView()
-              ),
-              visible: state.launcherVisible
-            ),
+          Consumer2<LauncherState, SettingsService>(
+            builder: (_, state, settings, child) {
+              if (state.launcherVisible && settings.quietHomeEnabled && !state.allAppsOpen) {
+                return const QuietHomeView();
+              }
+              return Visibility(
+                child: child!,
+                replacement: const Center(
+                  child: AlternativeLauncherView()
+                ),
+                visible: state.launcherVisible
+              );
+            },
             child: Scaffold(
               backgroundColor: Colors.transparent,
               appBar: FocusAwareAppBar(key: _appBarKey),

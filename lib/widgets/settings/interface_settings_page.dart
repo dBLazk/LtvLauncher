@@ -17,7 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'focusable_settings_tile.dart';
 import 'launcher_sections_panel_page.dart';
 import 'continue_watching_settings_page.dart';
@@ -35,6 +38,7 @@ class InterfaceSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppLocalizations localizations = AppLocalizations.of(context)!;
+    SettingsService settingsService = Provider.of<SettingsService>(context);
 
     return Column(
       children: [
@@ -49,6 +53,12 @@ class InterfaceSettingsPage extends StatelessWidget {
                   leading: const Icon(Icons.category),
                   title: Text(localizations.launcherSections, style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => Navigator.of(context).pushNamed(LauncherSectionsPanelPage.routeName),
+                ),
+                RoundedSwitchListTile(
+                  value: settingsService.quietHomeEnabled,
+                  onChanged: (value) => settingsService.setQuietHomeEnabled(value),
+                  title: Text("Quiet home screen", style: Theme.of(context).textTheme.bodyMedium),
+                  secondary: const Icon(Icons.view_list),
                 ),
                 FocusableSettingsTile(
                   leading: const Icon(Icons.play_circle_outline),
